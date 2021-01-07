@@ -1,0 +1,53 @@
+#! /bin/sh
+feh --bg-scale ~/Pictures/wallpaper.jpg
+$HOME/.config/polybar/launch.sh
+sxhkd &
+
+picom &
+xset led named "Scroll Lock"
+bspc monitor -d 1 2 3 4 5 6 7 8 9
+nitrogen --resotre &
+blueman-applet
+nm-applet
+mpd &
+xinput set-prop "ELAN1300:00 04F3:3057 Touchpad" "libinput Tapping Enabled" 1
+xautolock -time 5 -locker i3lock-fancy -notify 20 -notifier 'xset dpms force off' &
+xautolock -time 10 -locker i3lock-fancy "systemctl suspend" &
+
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+
+####BSPWM configuration ####
+bspc config border_radius                8
+bspc config border_width                  2
+bspc config window_gap                    10
+bspc config top_padding                   20
+bspc config bottom_padding                0
+bspc config left_padding                  0
+bspc config right_padding                 0
+bspc config single_monocle                false
+bspc config click_to_focus                true
+bspc config split_ratio                   0.50
+bspc config borderless_monocle            true
+bspc config gapless_monocle               true
+bspc config focus_by_distance             true
+bspc config focus_follows_pointer         true
+bspc config history_aware_focus           true
+bspc config remove_disabled_monitors      true
+bspc config merge_overlapping_monitors    true
+bspc config pointer_modifier mod4
+bspc config pointer_action1 move
+bspc config pointer_action2 resize_side
+bspc config pointer_action3 resize_corner
+bspc rule -a Zathura state=tiled
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+
+#polybar hidden when fullscreen for vlc, youtube, mpv ...
+#find out the name of your monitor with xrandr
+xdo below -t $(xdo id -n root) $(xdo id -a polybar-main_DisplayPort-0)
+xdo below -t $(xdo id -n root) $(xdo id -a polybar-main_DisplayPort-1)
+xdo below -t $(xdo id -n root) $(xdo id -a polybar-main_HDMI-A-0)
+
