@@ -34,19 +34,6 @@ highlight ColorColumn ctermbg=0 guibg=lightgrey
 if (has('termguicolors'))
   set termguicolors
 endif
-let g:jellybeans_overrides = {
-\    'background': { 'ctermbg': 'none', '256ctermbg': 'none' },
-\}
-if has('termguicolors') && &termguicolors
-    let g:jellybeans_overrides['background']['guibg'] = 'none'
-endif
-
-let g:jellybeans_overrides = {
-\    'background': { 'ctermbg': 'none', '256ctermbg': 'none' },
-\}
-if has('termguicolors') && &termguicolors
-    let g:jellybeans_overrides['background']['guibg'] = 'none'
-endif
 
 call plug#begin('~/.vim/plugged')
 Plug 'francoiscabrol/ranger.vim'
@@ -56,14 +43,12 @@ Plug 'morhetz/gruvbox'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 "Plug 'vimwiki/vimwiki'
+ Plug 'joshdick/onedark.vim'
 Plug 'stsewd/fzf-checkout.vim'
-Plug 'jceb/vim-orgmode'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'maxmellon/vim-jsx-pretty'
 Plug 'jremmen/vim-ripgrep'
 Plug 'tpope/vim-fugitive'
 "Plug 'jreybert/vimagit'
-Plug 'leafgarland/typescript-vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'preservim/nerdcommenter'
@@ -71,27 +56,24 @@ Plug 'vim-utils/vim-man'
 Plug 'preservim/nerdtree'
 Plug 'mattn/emmet-vim'
 "Plug 'itchyny/lightline.vim'
-Plug 'turbio/bracey.vim'
-Plug 'tkhren/vim-fake' 
 Plug 'sheerun/vim-polyglot'
 Plug 'hzchirs/vim-material'
-Plug 'dsznajder/vscode-es7-javascript-react-snippets', { 'do': 'yarn install --frozen-lockfile && yarn compile' }
+Plug 'StanAngeloff/php.vim'
+"Plug 'wfxr/minimap.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
+
 call plug#end()
 
 call vundle#begin()
-Plugin 'tweekmonster/django-plus.vim'
-Plugin 'tomasiser/vim-code-dark'
-Plugin 'joshdick/onedark.vim'
+"Plugin 'tomasiser/vim-code-dark'
+"Plugin 'joshdick/onedark.vim'
 Plugin 'eslint/eslint'
 Plugin 'mbbill/undotree'
-Plugin 'nvie/vim-flake8'
 Plugin 'dense-analysis/ale'
 Plugin 'isRuslan/vim-es6'
-Plugin 'vim-scripts/indentpython.vim'
+Plugin 'tpope/vim-commentary'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'sollidsnake/vterm'
-Plugin 'jmcantrell/vim-virtualenv' 
 Plugin 'Yggdroot/indentLine'
 Plugin 'chrisbra/csv.vim'
 Plugin 'alvan/vim-closetag'
@@ -99,9 +81,10 @@ call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
-let g:material_style= 'dark'
+let g:material_style= 'palenight'
 set background=dark
-colorscheme vim-material
+colorscheme onedark
+"colorscheme dracula
 
 
 if executable('rg')
@@ -136,60 +119,7 @@ nnoremap <silent> <Leader>+ :vertical resize +5<CR>
 nnoremap <silent> <Leader>- :vertical resize +5<CR>
 imap hh <C-y>,
 
-" Bind F5 to save file if modified and execute python script in a buffer.
-nnoremap <silent> <F5> :call SaveAndExecutePython()<CR>
-vnoremap <silent> <F5> :<C-u>call SaveAndExecutePython()<CR>
-function! SaveAndExecutePython()
 
-    " save and reload current file
-    silent execute "update | edit"
-
-    " get file path of current file
-    let s:current_buffer_file_path = expand("%")
-
-    let s:output_buffer_name = "Python"
-    let s:output_buffer_filetype = "output"
-
-    " reuse existing buffer window if it exists otherwise create a new one
-    if !exists("s:buf_nr") || !bufexists(s:buf_nr)
-        silent execute 'botright new ' . s:output_buffer_name
-        let s:buf_nr = bufnr('%')
-    elseif bufwinnr(s:buf_nr) == -1
-        silent execute 'botright new'
-        silent execute s:buf_nr . 'buffer'
-    elseif bufwinnr(s:buf_nr) != bufwinnr('%')
-        silent execute bufwinnr(s:buf_nr) . 'wincmd w'
-    endif
-
-    silent execute "setlocal filetype=" . s:output_buffer_filetype
-    setlocal bufhidden=delete
-    setlocal buftype=nofile
-    setlocal noswapfile
-    setlocal nobuflisted
-    setlocal winfixheight
-    setlocal cursorline " make it easy to distinguish
-    setlocal nonumber
-    setlocal norelativenumber
-    setlocal showbreak=""
-
-    " clear the buffer
-    setlocal noreadonly
-    setlocal modifiable
-    %delete _
-
-    " add the console output
-    silent execute ".!python " . shellescape(s:current_buffer_file_path, 1)
-
-    " resize window to content length
-    " Note: This is annoying because if you print a lot of lines then your code buffer is forced to a height of one line every time you run this function.
-    "       However without this line the buffer starts off as a default size and if you resize the buffer then it keeps that custom size after repeated runs of this function.
-    "       But if you close the output buffer then it returns to using the default size when its recreated
-    "execute 'resize' . line('$')
-
-    " make the buffer non modifiable
-    setlocal readonly
-    setlocal nomodifiable
-endfunction
 "nerdtre settings
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -280,11 +210,6 @@ else
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
 
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 "stupid
@@ -298,101 +223,28 @@ nmap <leader>gp :Gpush<CR>
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" Symbol renaming.
-map <leader>rn <Plug>(coc-rename)
-
 " Formatting selected code.
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
 
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
 nmap <silent> <C-s> <Plug>(coc-range-select)
 xmap <silent> <C-s> <Plug>(coc-range-select)
 
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
-let g:javascript_plugin_jsdoc = 1
-let g:javascript_plugin_ngdoc = 1
-let g:javascript_plugin_flow = 1
-let g:ranger_maps_keys = 0
-map <leader>f :RangerNewTab<CR>
-
-
-let g:vimwiki_list = [{'path': '~/vimwiki/',
-                      \ 'syntax': 'markdown', 'ext': '.md'}]
-
-let g:airline_theme = 'material'
+let g:airline_theme = 'onedark'
 
 let g:airline_powerline_fonts = 1
 let g:codedark_conservative = 1
-
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
