@@ -37,6 +37,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 Plug 'francoiscabrol/ranger.vim'
+Plug 'mhinz/vim-startify'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'ap/vim-css-color'
 Plug 'morhetz/gruvbox'
@@ -59,9 +60,10 @@ Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'hzchirs/vim-material'
 Plug 'StanAngeloff/php.vim'
+Plug 'preservim/tagbar'
 "Plug 'wfxr/minimap.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
-
+Plug 'ctrlpvim/ctrlp.vim'
 call plug#end()
 
 call vundle#begin()
@@ -122,7 +124,7 @@ imap hh <C-y>,
 
 "nerdtre settings
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeGitStatusUpdateOnCursorHold = 1
 map <leader><tab> :NERDTreeToggle<CR>
@@ -295,3 +297,6 @@ function! ChooseTerm(termname, slider)
 	endif
 endfunction
 tnoremap jj <C-\><C-n>
+
+"Tagbar Toggle
+nmap <Leader>tt :TagbarToggle<CR>
